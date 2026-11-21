@@ -19,14 +19,25 @@
 | **Financiamento Banco Mundial** | Aplicam-se: regras de elegibilidade e anticorrupção, verificação de empresas impedidas (*debarment list*), divulgação de beneficiário efetivo, padrões ambientais e sociais (ESHS/código de conduta), e *sustainable procurement*. |
 | **Documentos "a solicitar por e-mail"** | O documento de concurso (SBD) é que define: critérios de qualificação (faturação média, contratos similares, pessoal-chave), especificações técnicas, número de utilizadores, local de alojamento, prazo de execução e período de garantia. **Nada se pode fechar antes de o obter.** |
 
-### 1.2 ⚠️ Pontos de verificação antes de qualquer passo
+### 1.2 Autenticidade — ✅ confirmada no site oficial
 
-1. **Contactos em Gmail/Outlook pessoais.** Projetos financiados pelo Banco Mundial costumam usar endereços institucionais e publicar o aviso no **UNDB Online** e no portal de aquisições do Banco Mundial (sistema STEP). Antes de enviar dados da empresa ou dinheiro:
-   - confirmar o aviso em **www.wardip.gw** e nas redes oficiais do projeto;
-   - procurar a referência **WARDIP-F-002-2026** em `projects.worldbank.org` (aba *Procurement*) / UNDB;
-   - ligar para a Unidade de Coordenação do Projeto (UCP/UGP) por telefone oficial.
-2. **Nunca pagar "taxa de documento"** sem recibo oficial da entidade contratante.
-3. O cartaz tem um campo em branco após "FORNECIMENTO DE BENS" — sinal de arte preliminar; confirmar a versão oficial do aviso.
+O anúncio foi publicado no site oficial do projeto (consultado em 21/11/2026):
+<https://wardip.gw/wardip-lanca-concurso-publico-internacional-para-sistema-de-e-mail-institucional-e-gestao-documental/>
+
+Informações adicionais que **não estavam no cartaz**:
+
+| Item | Detalhe oficial | Implicação |
+|---|---|---|
+| **Procedimento** | RFB com **dois envelopes** | Envelope 1 = proposta técnica (+ qualificação + garantia); Envelope 2 = proposta financeira, aberto **apenas** para quem passar na avaliação técnica. A proposta técnica decide tudo: não pode ter lacunas. |
+| **Local de entrega** | Bairro Penha de «Brá», Trás de «Obras de Nino», Bissau | Entrega **física** em Bissau → é preciso um representante local ou um serviço de correio expresso com margem de segurança (chegar até 12/12). |
+| **Telefone** | +245 96 587 09 45 | Canal para confirmar receção do pedido e esclarecimentos. |
+| **Idioma do documento** | **Inglês** | Ler o SBD em inglês; confirmar na *Bid Data Sheet* (BDS) o idioma exigido para a proposta (pode ser inglês, português ou ambos). Prever tradução. |
+| **Acesso ao documento** | Mediante **pedido escrito** | Enviar pedido formal por e-mail (modelo em §1.5). |
+
+Os e-mails Gmail/Outlook são os mesmos indicados pelo site oficial, portanto são os canais da coordenação. Cuidados que continuam válidos:
+- Enviar sempre com cópia para os três endereços e guardar comprovativos.
+- Não pagar nenhuma taxa sem recibo oficial da coordenação do WARDIP.
+- Confirmar por telefone a receção do pedido.
 
 ### 1.3 Leitura estratégica
 
@@ -41,6 +52,23 @@ Um programador individual dificilmente cumpre sozinho os critérios de qualifica
 1. **Consórcio (JV)** com um integrador com experiência comprovada em e-mail/GED governamental (Portugal, Brasil, Cabo Verde, Senegal, Costa do Marfim), com a tua empresa como **parceiro local** (contexto, língua, formação, suporte em Bissau).
 2. **Subcontratado** de um concorrente forte (arquitetura, implantação, formação em português/kriol).
 3. Se o prazo de 24 dias for curto demais, usar este plano como base para **concursos seguintes** do WARDIP (haverá outros lotes de transformação digital).
+
+### 1.5 Modelo de pedido do documento de concurso
+
+> **Para:** anibaldee@gmail.com
+> **Cc:** aaronerachid@outlook.com; severianogomes72@gmail.com
+> **Assunto:** Pedido do Documento de Concurso – WARDIP-F-002-2026
+>
+> Exmos. Senhores,
+>
+> A empresa **[Nome da empresa]**, com sede em **[endereço]**, registada sob o n.º **[NIF/registo]**, vem manifestar o seu interesse no Concurso Público Internacional WARDIP-F-002-2026 – Conceção técnica, fornecimento e implementação do sistema de e-mail institucional e da plataforma de gestão documental do Estado da Guiné-Bissau, e solicitar o envio do respetivo Documento de Concurso (RFB), bem como de eventuais adendas.
+>
+> Solicitamos igualmente confirmação de: (i) prazo para pedidos de esclarecimento; (ii) data de eventual reunião/visita pré-concurso; (iii) idioma(s) aceite(s) para a proposta; (iv) forma de entrega e se é admitida submissão eletrónica.
+>
+> Pessoa de contacto: **[Nome, cargo, telefone, e-mail]**
+>
+> Com os melhores cumprimentos,
+> **[Nome] — [Cargo]**
 
 ---
 
@@ -260,6 +288,7 @@ Se não existir infraestrutura nacional de chaves públicas operacional, propor 
 | Falta de equipa TIC local para operar | Operação assistida longa, documentação, contrato de suporte, capacitação certificada |
 | Resistência ao uso (cultura do papel e de e-mails pessoais) | Normas legais internas, patrocínio político, multiplicadores, suporte de proximidade |
 | Ausência de PKI e de tabela de temporalidade nacionais | Incluir PKI e consultoria arquivística no escopo |
+| Entrega física em Bissau falhar (correio atrasado) | Representante local; despacho até 08/12; recibo de entrega |
 | Prazo curto para a proposta (24 dias) | Decisão de consórcio na primeira semana; reaproveitar materiais de referência do parceiro |
 | Fraude no anúncio (contactos não institucionais) | Verificação prévia (§1.2) |
 
@@ -269,13 +298,14 @@ Se não existir infraestrutura nacional de chaves públicas operacional, propor 
 
 | Data | Ação |
 |---|---|
-| **21–23/11** | Verificar autenticidade do anúncio (§1.2); pedir o documento de concurso por escrito; registar-se como interessado |
+| **21–23/11** | ~~Verificar autenticidade~~ ✅ (§1.2); enviar pedido escrito do documento de concurso (§1.5) e confirmar por telefone |
 | **24–28/11** | Ler o SBD inteiro; extrair critérios de qualificação; decidir: concorrer sozinho, consórcio ou subcontratação; contactar parceiros |
 | **até 28/11** | Enviar **pedidos de esclarecimento** (o prazo para perguntas costuma terminar 14–21 dias antes da entrega) |
 | **25/11–05/12** | Pedir **garantia bancária** ao banco (pode levar 1–2 semanas); montar matriz de conformidade; escrever metodologia e arquitetura (usar §2–§7) |
 | **01–08/12** | CVs, referências, proposta financeira, cotações de hardware |
-| **08–11/12** | Revisão completa (conformidade formal, assinaturas, rubricas, cópias) |
-| **12–14/12** | Submissão antecipada (presencial/eletrónica conforme SBD) — **não deixar para o dia 15** |
+| **08–10/12** | Revisão completa: **dois envelopes separados e lacrados** (técnico / financeiro), marcados conforme a BDS; original + cópias; assinaturas e rubricas; traduções |
+| **até 12/12** | Envelopes **fisicamente em Bissau** (representante local ou correio expresso) |
+| **12–14/12** | Entrega no Bairro Penha de «Brá», Trás de «Obras de Nino», com **recibo datado** — **não deixar para o dia 15** |
 
 ---
 
