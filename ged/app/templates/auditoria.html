@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block titulo %}Auditoria{% endblock %}
+{% block conteudo %}
+<h1>Trilha de auditoria</h1>
+{% if integra %}<div class="resultado bom"><b>✔ Cadeia íntegra</b> — {{ total }} eventos encadeados por SHA-256, sem adulterações.</div>
+{% else %}<div class="resultado mau"><b>✖ Cadeia quebrada no evento #{{ falha }}</b> — o histórico foi alterado fora da aplicação.</div>{% endif %}
+<table class="tabela">
+  <thead><tr><th>#</th><th>Data</th><th>Utilizador</th><th>Ação</th><th>Documento</th><th>Detalhe</th><th>IP</th><th>Hash</th></tr></thead>
+  <tbody>{% for e in eventos %}
+  <tr><td>{{ e.id }}</td><td>{{ e.criado_em|dt }}</td><td>{{ e.utilizador }}</td><td>{{ e.acao }}</td>
+      <td>{% if e.documento_id %}<a href="/documentos/{{ e.documento_id }}">#{{ e.documento_id }}</a>{% endif %}</td>
+      <td>{{ e.detalhe }}</td><td>{{ e.ip }}</td><td><code class="hash">{{ e.hash[:16] }}…</code></td></tr>
+  {% endfor %}</tbody>
+</table>
+{% endblock %}

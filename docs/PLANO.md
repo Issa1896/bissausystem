@@ -309,13 +309,9 @@ Se não existir infraestrutura nacional de chaves públicas operacional, propor 
 
 ---
 
-## 12. O que podemos construir neste repositório
+## 12. Demonstração funcional (já implementada)
 
-Para reforçar a proposta técnica (e servir de base real ao sistema), sugere-se uma **prova de conceito demonstrável**:
-
-1. `infra/` — `docker-compose` com servidor de e-mail (Postfix/Dovecot/Rspamd/SOGo), Keycloak (SSO + MFA), PostgreSQL, MinIO, OpenSearch.
-2. `ged/` — módulo de **Protocolo e Expediente** (numeração única, tramitação, despachos, assinatura PAdES, QR de verificação, PDF/A), com API REST documentada.
-3. `portal-verificacao/` — página pública de verificação de autenticidade.
-4. `docs/` — arquitetura, matriz de conformidade, manuais de utilizador e de administração (PT + glossário em kriol).
-
-Uma demo funcional com o timbre do Estado e fluxo "ofício entra → é protocolado → despachado → assinado → verificado por QR" causa forte impressão numa avaliação técnica.
+A prova de conceito está neste repositório — ver o [README](../README.md):
+Login Único (Keycloak, OIDC + MFA), correio institucional (Postfix/Dovecot/Rspamd + Roundcube com SSO via XOAUTH2)
+e GED com o fluxo **ofício → protocolo → despacho → assinatura PAdES → verificação pública por QR**,
+trilha de auditoria encadeada por hash e testes automáticos ponta a ponta. Arranque: `docker compose up -d --build`.

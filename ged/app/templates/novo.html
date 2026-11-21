@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block titulo %}Novo ofício{% endblock %}
+{% block conteudo %}
+<div class="cartao">
+  <h1>Novo ofício</h1>
+  <form method="post" action="/documentos" class="form">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <label>Assunto<input name="assunto" required maxlength="300" placeholder="Ex.: Pedido de informação sobre a execução orçamental"></label>
+    <label>Destinatário<input name="destinatario" required maxlength="300" placeholder="Ex.: Sua Excelência o Ministro das Finanças"></label>
+    <label>E-mail institucional do destinatário <small>(recebe o ofício assinado em anexo)</small>
+      <input name="destinatario_email" type="email" value="{{ caixa_externa }}"></label>
+    <label>Classificação arquivística<input name="classificacao" maxlength="100" value="100.10 — Correspondência oficial"></label>
+    <label>Texto <small>(separe parágrafos com uma linha em branco)</small>
+      <textarea name="corpo" rows="12" required>Excelência,
+
+Venho por este meio solicitar a Vossa Excelência ...</textarea></label>
+    <button class="btn">Guardar rascunho</button>
+  </form>
+</div>
+{% endblock %}

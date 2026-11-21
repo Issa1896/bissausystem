@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block conteudo %}
+<section class="hero">
+  <h1>Expediente eletrónico do Estado</h1>
+  <p>Elaboração, protocolo, despacho e assinatura digital de documentos oficiais, com verificação pública de autenticidade por QR code.</p>
+  <div class="acoes">
+    <a class="btn" href="/login">Entrar com o Login Único</a>
+    <a class="btn-sec" href="/verificar">Verificar um documento</a>
+  </div>
+</section>
+<section class="passos">
+  <div><b>1</b><h3>Elaboração</h3><p>O técnico redige o ofício a partir do modelo oficial.</p></div>
+  <div><b>2</b><h3>Protocolo</h3><p>Registo com número único nacional e carimbo temporal.</p></div>
+  <div><b>3</b><h3>Despacho</h3><p>O dirigente decide e encaminha para assinatura.</p></div>
+  <div><b>4</b><h3>Assinatura</h3><p>Assinatura digital PAdES com certificado da AC do Estado.</p></div>
+  <div><b>5</b><h3>Verificação</h3><p>Qualquer pessoa confirma a autenticidade pelo QR code.</p></div>
+</section>
+{% endblock %}

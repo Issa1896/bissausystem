@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}GED do Estado{% endblock %} · {{ settings.org_sigla }}</title>
+  <meta name="csrf" content="{{ csrf }}">
+  <link rel="stylesheet" href="/static/estilo.css">
+</head>
+<body>
+  <div class="faixa"><span></span><span></span><span></span></div>
+  <header class="topo">
+    <a class="marca" href="/">
+      <strong>GED do Estado</strong>
+      <small>{{ settings.org_nome }}</small>
+    </a>
+    <nav>
+      {% if user %}
+        <a href="/">Painel</a>
+        {% if user.tem('elaboracao') %}<a href="/documentos/novo">Novo ofício</a>{% endif %}
+        {% if user.tem('admin') %}<a href="/auditoria">Auditoria</a>{% endif %}
+        <a href="{{ settings.webmail_url }}" target="_blank" rel="noopener">E-mail</a>
+        <span class="quem">{{ user.nome }}<small>{{ user.cargo }}</small></span>
+        <a class="btn-sec" href="/logout">Sair</a>
+      {% else %}
+        <a href="/verificar">Verificar documento</a>
+        <a class="btn" href="/login">Entrar</a>
+      {% endif %}
+    </nav>
+  </header>
+  <main>{% block conteudo %}{% endblock %}</main>
+  <footer class="rodape">{{ settings.org_pais }} · Sistema de Gestão Documental — ambiente de demonstração</footer>
+</body>
+</html>

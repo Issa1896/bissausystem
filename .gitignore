@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+ged/data/
+.env
+infra/mailserver/data/
+*.whl
+# gerado pelo docker-mailserver em execução
+infra/mailserver/config/dovecot-quotas.cf

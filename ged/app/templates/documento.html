@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block titulo %}{{ doc.numero or "Rascunho" }}{% endblock %}
+{% block conteudo %}
+{% if msg %}<div class="flash">Operação concluída: {{ msg }}.</div>{% endif %}
+<div class="grelha">
+  <article class="cartao">
+    <div class="cab-doc">
+      <div>
+        <p class="sub">{{ doc.tipo }} {% if doc.numero %}n.º <b>{{ doc.numero }}</b>{% else %}(sem número){% endif %}</p>
+        <h1>{{ doc.assunto }}</h1>
+      </div>
+      <span class="estado e-{{ doc.estado }}">{{ doc.estado_rotulo }}</span>
+    </div>
+    <dl class="meta">
+      <dt>Destinatário</dt><dd>{{ doc.destinatario }}{% if doc.destinatario_email %} &lt;{{ doc.destinatario_email }}&gt;{% endif %}</dd>
+      <dt>Autor</dt><dd>{{ doc.autor.nome }} — {{ doc.autor.unidade }}</dd>
+      {% if doc.classificacao %}<dt>Classificação</dt><dd>{{ doc.classificacao }}</dd>{% endif %}
+      {% if doc.protocolado_em %}<dt>Protocolado</dt><dd>{{ doc.protocolado_em|dt }} por {{ doc.protocolado_por.nome }}</dd>{% endif %}
+      {% if doc.despacho_texto %}<dt>Despacho</dt><dd>«{{ doc.despacho_texto }}» — {{ doc.despachante.nome }}, {{ doc.despachado_em|dt }}</dd>{% endif %}
+      {% if doc.signatario %}<dt>Signatário</dt><dd>{{ doc.signatario.nome }} ({{ doc.signatario.cargo }})</dd>{% endif %}
+      {% if doc.assinado_em %}<dt>Assinado</dt><dd>{{ doc.assinado_em|dt }}</dd>
+      <dt>Código</dt><dd><a href="{{ url_verif }}"><code>{{ doc.codigo_verificacao }}</code></a></dd>
+      <dt>SHA-256</dt><dd><code class="hash">{{ doc.sha256 }}</code></dd>{% endif %}
+    </dl>
+    <div class="texto">{% for p in doc.corpo.split("\n\n") %}<p>{{ p }}</p>{% endfor %}</div>
+
+    <div class="acoes-doc">
+    {% if doc.estado == Estado.RASCUNHO and doc.autor_id == user.id %}
+      <form method="post" action="/documentos/{{ doc.id }}/submeter"><input type="hidden" name="csrf" value="{{ csrf }}">
+        <button class="btn">Submeter ao protocolo</button></form>
+      <details><summary>Editar rascunho</summary>
+        <form method="post" action="/documentos/{{ doc.id }}/editar" class="form"><input type="hidden" name="csrf" value="{{ csrf }}">
+          <label>Assunto<input name="assunto" value="{{ doc.assunto }}" required></label>
+          <label>Destinatário<input name="destinatario" value="{{ doc.destinatario }}" required></label>
+          <label>E-mail do destinatário<input name="destinatario_email" type="email" value="{{ doc.destinatario_email }}"></label>
+          <label>Texto<textarea name="corpo" rows="10" required>{{ doc.corpo }}</textarea></label>
+          <button class="btn-sec">Guardar alterações</button>
+        </form></details>
+    {% endif %}
+    {% if doc.estado == Estado.SUBMETIDO and user.tem('protocolo') %}
+      <form method="post" action="/documentos/{{ doc.id }}/protocolar"><input type="hidden" name="csrf" value="{{ csrf }}">
+        <button class="btn">Registar no protocolo{% if doc.numero %} (mantém {{ doc.numero }}){% endif %}</button></form>
+    {% endif %}
+    {% if doc.estado == Estado.PROTOCOLADO and user.tem('despacho') %}
+      <form method="post" action="/documentos/{{ doc.id }}/despachar" class="form"><input type="hidden" name="csrf" value="{{ csrf }}">
+        <label>Despacho<textarea name="despacho" rows="2" required>Concordo. À assinatura de Sua Excelência o Ministro.</textarea></label>
+        <label>Encaminhar para assinatura de
+          <select name="signatario_id">{% for s in signatarios %}<option value="{{ s.id }}">{{ s.nome }} — {{ s.cargo }}</option>{% endfor %}</select></label>
+        <button class="btn">Despachar</button>
+      </form>
+    {% endif %}
+    {% if doc.estado == Estado.DESPACHADO and doc.signatario_id == user.id %}
+      <form method="post" action="/documentos/{{ doc.id }}/assinar"><input type="hidden" name="csrf" value="{{ csrf }}">
+        <p class="aviso">Ao assinar, é gerado o PDF oficial com QR code e aplicada a sua assinatura digital qualificada (PAdES) com o certificado emitido pela AC de Assinatura do Estado.</p>
+        <button class="btn">Assinar digitalmente</button></form>
+    {% endif %}
+    {% if (doc.estado == Estado.PROTOCOLADO and user.tem('despacho')) or (doc.estado == Estado.DESPACHADO and doc.signatario_id == user.id) %}
+      <details><summary>Devolver para correção</summary>
+        <form method="post" action="/documentos/{{ doc.id }}/devolver" class="form"><input type="hidden" name="csrf" value="{{ csrf }}">
+          <label>Motivo<textarea name="motivo" rows="2" required></textarea></label>
+          <button class="btn-sec">Devolver ao autor</button></form></details>
+    {% endif %}
+    {% if doc.pdf_path %}
+      <a class="btn" href="/documentos/{{ doc.id }}/pdf" target="_blank">Abrir PDF assinado</a>
+      <a class="btn-sec" href="{{ url_verif }}" target="_blank">Página de verificação</a>
+    {% endif %}
+    </div>
+  </article>
+
+  <aside class="cartao">
+    <h2>Histórico (auditoria)</h2>
+    <ol class="linha-tempo">
+      {% for e in doc.eventos %}
+      <li><b>{{ e.acao }}</b> · {{ e.utilizador }}<br><small>{{ e.criado_em|dt }}</small><p>{{ e.detalhe }}</p></li>
+      {% endfor %}
+    </ol>
+  </aside>
+</div>
+{% endblock %}

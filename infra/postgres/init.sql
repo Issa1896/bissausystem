@@ -1,0 +1,1 @@
+CREATE DATABASE ged OWNER estado;

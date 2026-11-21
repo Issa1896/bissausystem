@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block titulo %}Painel{% endblock %}
+{% block conteudo %}
+<h1>Olá, {{ user.nome.split()[0] }}</h1>
+<p class="sub">{{ user.cargo }} · {{ user.unidade }}</p>
+
+<h2>A minha caixa de tarefas <span class="contador">{{ tarefas|length }}</span></h2>
+{% if tarefas %}
+<table class="tabela">
+  <thead><tr><th>N.º</th><th>Assunto</th><th>Estado</th><th>Atualizado</th></tr></thead>
+  <tbody>
+  {% for d in tarefas %}
+  <tr><td>{{ d.numero or "—" }}</td><td><a href="/documentos/{{ d.id }}">{{ d.assunto }}</a></td>
+      <td><span class="estado e-{{ d.estado }}">{{ d.estado_rotulo }}</span></td><td>{{ d.atualizado_em|dt }}</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}<p class="vazio">Nenhuma tarefa pendente.</p>{% endif %}
+
+<h2>Expediente recente</h2>
+<table class="tabela">
+  <thead><tr><th>N.º</th><th>Assunto</th><th>Autor</th><th>Estado</th><th>Atualizado</th></tr></thead>
+  <tbody>
+  {% for d in todos %}
+  <tr><td>{{ d.numero or "—" }}</td><td><a href="/documentos/{{ d.id }}">{{ d.assunto }}</a></td><td>{{ d.autor.nome }}</td>
+      <td><span class="estado e-{{ d.estado }}">{{ d.estado_rotulo }}</span></td><td>{{ d.atualizado_em|dt }}</td></tr>
+  {% else %}<tr><td colspan="5" class="vazio">Ainda não há documentos.</td></tr>{% endfor %}
+  </tbody>
+</table>
+{% endblock %}

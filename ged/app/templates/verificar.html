@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block titulo %}Verificar documento{% endblock %}
+{% block conteudo %}
+<div class="cartao estreito">
+  <h1>Verificação de autenticidade</h1>
+  {% if not codigo %}
+    <p>Introduza o código impresso no rodapé do documento ou leia o QR code.</p>
+    <form method="get" action="/verificar" class="form-linha">
+      <input name="codigo" placeholder="XXXX-XXXX-XXXX" required pattern="[A-Za-z0-9-]{4,20}">
+      <button class="btn">Verificar</button>
+    </form>
+  {% elif not doc %}
+    <div class="resultado mau"><b>Código «{{ codigo }}» não encontrado.</b><p>Este código não corresponde a nenhum documento emitido. O documento pode ser falso.</p></div>
+    <a href="/verificar">Tentar outro código</a>
+  {% else %}
+    {% if validacao and validacao.valido %}
+    <div class="resultado bom"><b>✔ Documento autêntico</b><p>Emitido e assinado digitalmente no Sistema de Gestão Documental do Estado. A assinatura é válida e a cadeia de certificação termina na AC Raiz do Estado.</p></div>
+    {% else %}
+    <div class="resultado mau"><b>✖ A assinatura do original não pôde ser validada</b></div>
+    {% endif %}
+    <dl class="meta">
+      <dt>Documento</dt><dd>{{ doc.tipo }} n.º {{ doc.numero }}</dd>
+      <dt>Assunto</dt><dd>{{ doc.assunto }}</dd>
+      <dt>Emitente</dt><dd>{{ settings.org_nome }} — {{ doc.autor.unidade }}</dd>
+      <dt>Assinado por</dt><dd>{{ doc.signatario.nome }} ({{ doc.signatario.cargo }})</dd>
+      <dt>Data</dt><dd>{{ doc.assinado_em|dt }} (hora de Bissau)</dd>
+      <dt>Código</dt><dd><code>{{ doc.codigo_verificacao }}</code></dd>
+      <dt>SHA-256</dt><dd><code class="hash">{{ doc.sha256 }}</code></dd>
+    </dl>
+
+    <h2>Confirmar a cópia que recebeu</h2>
+    <p>Carregue o PDF recebido para confirmar que é idêntico ao original e que a assinatura não foi alterada. O ficheiro não é guardado.</p>
+    <form method="post" action="/verificar/{{ doc.codigo_verificacao }}" enctype="multipart/form-data" class="form-linha">
+      <input type="hidden" name="csrf" value="{{ csrf }}">
+      <input type="file" name="ficheiro" accept="application/pdf" required>
+      <button class="btn">Comparar</button>
+    </form>
+    {% if comparacao %}
+      {% if comparacao.identico %}
+        <div class="resultado bom"><b>✔ O ficheiro é idêntico ao original registado.</b></div>
+      {% else %}
+        <div class="resultado mau"><b>✖ O ficheiro é diferente do original.</b>
+          <p>SHA-256 do ficheiro: <code class="hash">{{ comparacao.sha256 }}</code></p>
+          {% if comparacao.assinatura.erro %}<p>{{ comparacao.assinatura.erro }}</p>
+          {% elif not comparacao.assinatura.valido %}<p>A assinatura digital do ficheiro está inválida ou o conteúdo foi alterado após a assinatura.</p>{% endif %}
+        </div>
+      {% endif %}
+    {% endif %}
+    <p class="sub">Certificado da AC Raiz: <a href="/pki/ac-raiz.crt">descarregar</a></p>
+  {% endif %}
+</div>
+{% endblock %}

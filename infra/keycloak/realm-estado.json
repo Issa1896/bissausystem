@@ -1,0 +1,227 @@
+{
+  "realm": "estado",
+  "displayName": "Login Único do Estado — DEMO",
+  "enabled": true,
+  "internationalizationEnabled": true,
+  "supportedLocales": [
+    "pt-PT",
+    "pt-BR",
+    "en",
+    "fr"
+  ],
+  "defaultLocale": "pt-PT",
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "sslRequired": "external",
+  "bruteForceProtected": true,
+  "failureFactor": 5,
+  "waitIncrementSeconds": 60,
+  "maxFailureWaitSeconds": 900,
+  "passwordPolicy": "length(8) and upperCase(1) and lowerCase(1) and digits(1) and specialChars(1) and notUsername(undefined) and passwordHistory(5)",
+  "otpPolicyType": "totp",
+  "otpPolicyAlgorithm": "HmacSHA1",
+  "otpPolicyDigits": 6,
+  "otpPolicyPeriod": 30,
+  "ssoSessionIdleTimeout": 1800,
+  "ssoSessionMaxLifespan": 36000,
+  "accessTokenLifespan": 300,
+  "eventsEnabled": true,
+  "adminEventsEnabled": true,
+  "adminEventsDetailsEnabled": true,
+  "enabledEventTypes": [
+    "LOGIN",
+    "LOGIN_ERROR",
+    "LOGOUT",
+    "CODE_TO_TOKEN",
+    "UPDATE_TOTP",
+    "REMOVE_TOTP",
+    "UPDATE_PASSWORD"
+  ],
+  "roles": {
+    "realm": [
+      {
+        "name": "protocolo",
+        "description": "Registo de entrada e saída (protocolo)"
+      },
+      {
+        "name": "elaboracao",
+        "description": "Elaboração de documentos"
+      },
+      {
+        "name": "despacho",
+        "description": "Despacho de dirigente"
+      },
+      {
+        "name": "assinatura",
+        "description": "Assinatura de documentos oficiais"
+      },
+      {
+        "name": "admin",
+        "description": "Administração e auditoria"
+      }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "ged",
+      "name": "Gestão Documental (GED)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "ged-segredo-demo-TROCAR",
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "redirectUris": [
+        "http://localhost:8000/auth/callback"
+      ],
+      "webOrigins": [
+        "http://localhost:8000"
+      ],
+      "rootUrl": "http://localhost:8000",
+      "baseUrl": "/",
+      "attributes": {
+        "post.logout.redirect.uris": "http://localhost:8000/*",
+        "pkce.code.challenge.method": "S256"
+      },
+      "protocolMappers": [
+        {
+          "name": "perfis-ged",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "config": {
+            "claim.name": "roles",
+            "multivalued": "true",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "introspection.token.claim": "true"
+          }
+        }
+      ]
+    },
+    {
+      "clientId": "webmail",
+      "name": "Correio Institucional (Webmail)",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "webmail-segredo-demo-TROCAR",
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "redirectUris": [
+        "http://localhost:8081/*"
+      ],
+      "webOrigins": [
+        "http://localhost:8081"
+      ],
+      "rootUrl": "http://localhost:8081",
+      "baseUrl": "/",
+      "attributes": {
+        "post.logout.redirect.uris": "http://localhost:8081/*"
+      },
+      "protocolMappers": []
+    }
+  ],
+  "users": [
+    {
+      "username": "ana.mendes",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Ana",
+      "lastName": "Mendes",
+      "email": "ana.mendes@demo.gov.gw",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Demo#2026",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "default-roles-estado",
+        "protocolo"
+      ]
+    },
+    {
+      "username": "carla.vieira",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Carla",
+      "lastName": "Vieira",
+      "email": "carla.vieira@demo.gov.gw",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Demo#2026",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "default-roles-estado",
+        "elaboracao"
+      ]
+    },
+    {
+      "username": "bruno.sa",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Bruno",
+      "lastName": "Sá",
+      "email": "bruno.sa@demo.gov.gw",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Demo#2026",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "default-roles-estado",
+        "despacho"
+      ]
+    },
+    {
+      "username": "domingos.co",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Domingos",
+      "lastName": "Có",
+      "email": "domingos.co@demo.gov.gw",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Demo#2026",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "default-roles-estado",
+        "despacho",
+        "assinatura"
+      ]
+    },
+    {
+      "username": "eva.admin",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Eva",
+      "lastName": "Cabral",
+      "email": "eva.admin@demo.gov.gw",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Demo#2026",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "default-roles-estado",
+        "admin"
+      ]
+    }
+  ]
+}

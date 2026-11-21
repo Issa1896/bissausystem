@@ -1,0 +1,124 @@
+# Demonstração: E-mail institucional + Login Único + Gestão Documental
+# Uso: docker compose up -d --build   (ver README.md)
+name: bissausystem
+
+x-segredos: &segredos
+  GED_CLIENT_SECRET: ${GED_CLIENT_SECRET:-ged-segredo-demo-TROCAR}
+  WEBMAIL_CLIENT_SECRET: ${WEBMAIL_CLIENT_SECRET:-webmail-segredo-demo-TROCAR}
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: estado
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-estado-demo-TROCAR}
+      POSTGRES_DB: keycloak
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./infra/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U estado"]
+      interval: 5s
+      retries: 20
+    restart: unless-stopped
+
+  keycloak:
+    image: keycloak/keycloak:26.0
+    command: ["start-dev", "--import-realm"]
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      KC_DB_USERNAME: estado
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD:-estado-demo-TROCAR}
+      # URL pública (navegador) fixa; pedidos internos (keycloak:8080) recebem URLs internas
+      KC_HOSTNAME: http://localhost:8080
+      KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "true"
+      KC_HEALTH_ENABLED: "true"
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-Admin#Demo2026}
+    volumes:
+      - ./infra/keycloak/realm-estado.json:/opt/keycloak/data/import/realm-estado.json:ro
+    ports: ["8080:8080"]
+    depends_on:
+      postgres: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/9000 && printf 'GET /health/ready HTTP/1.0\\r\\n\\r\\n' >&3 && grep -q UP <&3"]
+      interval: 10s
+      retries: 30
+    restart: unless-stopped
+
+  mailserver:
+    image: mailserver/docker-mailserver:14
+    hostname: mail.demo.gov.gw
+    environment:
+      ENABLE_RSPAMD: 1            # antispam/antiphishing
+      ENABLE_CLAMAV: 0            # ativar em produção (antivírus; ~1 GB RAM)
+      ENABLE_OPENDKIM: 0
+      ENABLE_OPENDMARC: 0
+      ENABLE_POLICYD_SPF: 0
+      ENABLE_AMAVIS: 0
+      ENABLE_FAIL2BAN: 0
+      SPOOF_PROTECTION: 1
+      PERMIT_DOCKER: connected-networks
+      SSL_TYPE: ""                # em produção: letsencrypt/manual + porta 993/465 apenas
+      # Autenticação IMAP/SMTP com o token do Login Único (XOAUTH2/OAUTHBEARER)
+      ENABLE_OAUTH2: 1
+      OAUTH2_INTROSPECTION_URL: http://keycloak:8080/realms/estado/protocol/openid-connect/userinfo
+    volumes:
+      - ./infra/mailserver/config:/tmp/docker-mailserver
+      - maildata:/var/mail
+      - mailstate:/var/mail-state
+    ports:
+      - "127.0.0.1:25:25"
+      - "127.0.0.1:143:143"
+      - "127.0.0.1:587:587"
+    healthcheck:
+      test: ["CMD-SHELL", "ss -lnt | grep -q ':143 '"]
+      interval: 10s
+      retries: 30
+    restart: unless-stopped
+
+  webmail:
+    image: roundcube/roundcubemail:1.6.x-apache
+    environment:
+      <<: *segredos
+      ROUNDCUBEMAIL_DEFAULT_HOST: mailserver
+      ROUNDCUBEMAIL_DEFAULT_PORT: 143
+      ROUNDCUBEMAIL_SMTP_SERVER: mailserver
+      ROUNDCUBEMAIL_SMTP_PORT: 25
+      ROUNDCUBEMAIL_SKIN: elastic
+    volumes:
+      - ./infra/roundcube/sso.php:/var/roundcube/config/sso.php:ro
+    ports: ["8081:80"]
+    depends_on: [mailserver, keycloak]
+    restart: unless-stopped
+
+  ged:
+    build: ./ged
+    image: bissausystem-ged:demo
+    environment:
+      DATABASE_URL: postgresql+psycopg://estado:${POSTGRES_PASSWORD:-estado-demo-TROCAR}@postgres:5432/ged
+      BASE_URL: http://localhost:8000
+      SECRET_KEY: ${GED_SECRET_KEY:-troque-esta-chave-em-producao-0123456789abcdef}
+      AUTH_MODE: oidc
+      OIDC_METADATA_URL: http://keycloak:8080/realms/estado/.well-known/openid-configuration
+      OIDC_CLIENT_ID: ged
+      OIDC_CLIENT_SECRET: ${GED_CLIENT_SECRET:-ged-segredo-demo-TROCAR}
+      OIDC_LOGOUT_URL: http://localhost:8080/realms/estado/protocol/openid-connect/logout
+      SMTP_HOST: mailserver
+      SMTP_PORT: 25
+      MAIL_FROM: ged-notificacoes@demo.gov.gw
+      WEBMAIL_URL: http://localhost:8081
+    volumes:
+      - geddata:/data
+    ports: ["8000:8000"]
+    depends_on:
+      postgres: {condition: service_healthy}
+      keycloak: {condition: service_healthy}
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  maildata:
+  mailstate:
+  geddata:

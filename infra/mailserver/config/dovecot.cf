@@ -1,0 +1,2 @@
+# Escutar apenas IPv4 (ambientes sem IPv6). Em produção com IPv6, remover.
+listen = *
